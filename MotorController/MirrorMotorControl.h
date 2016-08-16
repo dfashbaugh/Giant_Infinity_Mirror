@@ -28,24 +28,24 @@ private:
 	MotorAndPosition left;
 	MotorAndPosition right;
 
-	void MoveMotor(MotorAndPosition &curMotor);
-	void initialize(Adafruit_DCMotor *motor);
-	void reverseInitialize(Adafruit_DCMotor *motor);
-	void driveBackward(MotorAndPosition &curMotor);
-	void driveForward(MotorAndPosition &curMotor);
-	void driveForwardTime(MotorAndPosition &curMotor, int delayTime);
-	void driveBackwardTime(MotorAndPosition &curMotor, int delayTime);
+	void MoveMotor  		(MotorAndPosition &curMotor);
+	void initialize 		(Adafruit_DCMotor *motor);
+	void reverseInitialize 	(Adafruit_DCMotor *motor);
+	void driveBackward   	(MotorAndPosition &curMotor);
+	void driveForward 		(MotorAndPosition &curMotor);
+	void driveForwardTime 	(MotorAndPosition &curMotor, int delayTime);
+	void driveBackwardTime	(MotorAndPosition &curMotor, int delayTime);
 
 public:
-	MirrorMotorControl() {};
+	MirrorMotorControl () {};
 	~MirrorMotorControl() {};
 
 	void SetupMotors();
-	void MoveMotors();
+	void MoveMotors ();
 
-	void MoveToXYZ(int x, int y, int z);
-	void driveToCenter();
-	void stopAll();
+	void MoveToXYZ 		(int x, int y, int z);
+	void driveToCenter 	();
+	void stopAll 		();
 };
 
 #endif
