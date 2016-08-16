@@ -35,6 +35,31 @@ void reverseInitialize(Adafruit_DCMotor *motor)
   motor->run(BACKWARD);
 }
 
+enum controlEnum{moveY = 1, moveX = 2, moveZ = 3, LEDEffect = 4};
+int  currentYDestination = 0;
+int  currentXDestination = 0;
+int  currentZDestination = 0;
+void OnControlChange(byte channel, byte control, byte value) {
+
+  control = control - 1;
+  
+  if(control == moveY)
+  {
+    currentYDestination = value;
+  }
+  else if(control == moveX)
+  {
+    currentXDestination = value;
+  }
+  else if(control == moveZ)
+  {
+    currentZDestination = value;
+  }
+
+  MoveToXYZ(currentXDestination, currentYDestination, currentZDestination);
+ 
+}
+
 void setup() {
   Serial.begin(9600);           // set up Serial library at 9600 bps
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");
@@ -55,6 +80,8 @@ void setup() {
   stopAll();
 
   driveToCenter();
+
+  usbMIDI.setHandleControlChange(OnControlChange);
 }
 
 void MoveMotor(MotorAndPosition &curMotor)
@@ -122,12 +149,18 @@ void driveToCenter()
   stopAll();
 }
 
-void loop() {
-  // To Set Position
-  //bottomLeft.destination = "YOUR POSITION"  
-
-  //MoveMotor(bottomLeft);
-  //MoveMotor(bottomRight);
-  //MoveMotor(topLeft);
-  //MoveMotor(topRight);
+void MoveToXYZ(int x, int y, int z)
+{
+  bottom.destination = y + z;
+  left.destination = x + z;
+  right.destination = -x + z;
 }
+
+void loop() {
+
+  MoveMotor(bottom);
+  MoveMotor(left);
+  MoveMotor(right);
+}
+
+
