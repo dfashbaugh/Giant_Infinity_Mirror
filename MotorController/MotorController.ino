@@ -23,18 +23,6 @@ MotorAndPosition bottom;
 MotorAndPosition left;
 MotorAndPosition right;
 
-void initialize(Adafruit_DCMotor *motor)
-{
-  motor->setSpeed(255);
-  motor->run(FORWARD);
-}
-
-void reverseInitialize(Adafruit_DCMotor *motor)
-{
-  motor->setSpeed(255);
-  motor->run(BACKWARD);
-}
-
 enum controlEnum{moveY = 1, moveX = 2, moveZ = 3, LEDEffect = 4};
 int  currentYDestination = 0;
 int  currentXDestination = 0;
@@ -103,6 +91,18 @@ void MoveMotor(MotorAndPosition &curMotor)
   else
     curMotor.motor->run(FORWARD);
 
+}
+
+void initialize(Adafruit_DCMotor *motor)
+{
+  motor->setSpeed(255);
+  motor->run(FORWARD);
+}
+
+void reverseInitialize(Adafruit_DCMotor *motor)
+{
+  motor->setSpeed(255);
+  motor->run(BACKWARD);
 }
 
 void driveForwardTime(MotorAndPosition &curMotor, int delayTime)
