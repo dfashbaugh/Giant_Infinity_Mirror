@@ -46,6 +46,8 @@ public:
 	void MoveToXYZ 		(int x, int y, int z);
 	void driveToCenter 	();
 	void stopAll 		();
+
+	void DriveCircles   ();
 };
 
 #endif

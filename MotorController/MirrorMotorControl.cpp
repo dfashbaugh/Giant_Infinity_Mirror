@@ -115,3 +115,54 @@ void MirrorMotorControl::MoveMotors()
   MoveMotor(left);
   MoveMotor(right);
 }
+
+void MirrorMotorControl::DriveCircles()
+{
+  // RIGHT
+  driveForward(left);
+  driveBackward(right);
+  delay(5000);
+  stopAll();
+
+  // LEFT
+  driveForward(right);
+  driveBackward(left);
+  delay(5000);
+  stopAll();
+
+  // DOWN
+  driveBackward(bottom);
+  delay(5000);
+  stopAll();
+
+  // DOWN RIGHT
+  driveForward(left);
+  driveBackward(right);
+  delay(5000);
+  stopAll();
+
+  // DOWN LEFT
+  driveForward(right);
+  driveBackward(left);
+  delay(10000);
+  stopAll();
+
+  // UP LEFT
+  driveForward(bottom);
+  delay(10000);
+  stopAll();
+
+  // UP RIGHT
+  driveForward(left);
+  driveBackward(right);
+  delay(10000);
+  stopAll();
+
+  // Back to center
+  driveForward(right);
+  driveBackward(left);
+  driveBackward(bottom);
+  delay(5000);
+  stopAll();
+
+}

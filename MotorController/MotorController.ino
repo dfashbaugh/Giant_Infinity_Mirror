@@ -19,7 +19,7 @@ void OnControlChange(byte channel, byte control, byte value) {
   else if(control == moveX)
   {
     currentXDestination = value;
-  }
+  } 
   else if(control == moveZ)
   {
     currentZDestination = value;
@@ -33,14 +33,15 @@ void setup() {
   Serial.println("Adafruit Motorshield v2 - DC Motor test!");
 
   theController.SetupMotors();
+  theController.DriveCircles();
 
-  usbMIDI.setHandleControlChange(OnControlChange);
+  // usbMIDI.setHandleControlChange(OnControlChange);
 }
 
 
 void loop() {
 
-  theController.MoveMotors();
+  // theController.MoveMotors();
 }
 
 
