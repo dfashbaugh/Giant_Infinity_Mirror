@@ -70,5 +70,7 @@ void loop() {
       digitalWrite(11, LOW);
     }
   }
+
+  Serial.println(analogRead(A0));
   
 }
