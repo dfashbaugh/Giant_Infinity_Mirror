@@ -80,7 +80,7 @@ int ReadRightMotorPos()
   return analogRead(RightMotorPosPin);
 }
 
-#define THRESHOLD_POS 20
+#define THRESHOLD_POS 5
 int leftForwardPos = 0;
 int leftBackwardPos = 0;
 int leftCurrentPos = 0;
