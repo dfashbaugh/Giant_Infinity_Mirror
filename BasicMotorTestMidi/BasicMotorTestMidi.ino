@@ -199,7 +199,26 @@ void InitMotors()
   MoveToCenter();
 }
 
+enum controlEnum{moveY = 1, moveX = 2, LEDEffect = 4};
+void OnControlChange(byte channel, byte control, byte value) {
+  
+  if(control == moveY)
+  {
+    MoveBottomToPos(map(value, 0, 127, 1024, 0));
+  }
+  else if(control == moveX)
+  {
+    digitalWrite(13, HIGH);
+    MoveLeftToPos(map(value, 0,127, 0, 1024));
+    MoveRightToPos(map(value, 0, 127, 1024, 0));
+  } 
+
+}
+
 void setup() {
+
+  pinMode(13, OUTPUT);
+  digitalWrite(13, LOW);
   // put your setup code here, to run once:
   // MOTOR 1
   pinMode(3, OUTPUT); // PWM
@@ -221,10 +240,9 @@ void setup() {
     digitalWrite(i, LOW);
   }
 
-  Serial.begin(9600);
-  Serial.println("Begin Initialization");
+  usbMIDI.setHandleControlChange(OnControlChange);  
+
   InitMotors();
-  Serial.println("Initialization Complete");
 }
 
 void loop() {
@@ -232,98 +250,5 @@ void loop() {
   MoveBottomMotor();
   MoveRightMotor();
   MoveLeftMotor();
-
-  if(Serial.available())
-  {
-    char theChar = Serial.read();
-    Serial.print("Found ");
-    Serial.println(theChar);
-    
-    if(theChar == 't')
-    {
-      MoveBottomForward();
-    }
-    else if(theChar == 'y')
-    {
-      MoveBottomBackward();
-    }
-    else if(theChar == 'u')
-    {
-      Serial.println(ReadBottomMotorPos());
-    }
-    else if(theChar == 'g')
-    {
-      MoveLeftForward();
-    }
-    else if(theChar == 'h')
-    {
-      MoveLeftBackward();
-    }
-    else if(theChar == 'j')
-    {
-      Serial.println(ReadLeftMotorPos());
-    }
-    else if(theChar == 'b')
-    {
-      MoveRightForward();
-    }
-    else if(theChar == 'n')
-    {
-      MoveRightBackward();
-    }
-    else if(theChar == 'm')
-    {
-      Serial.println(ReadRightMotorPos());
-    }
-
-    else if(theChar == 'w')
-    {
-      MoveBottomToPos(bottomCommandedPos - 20);
-    }
-    else if(theChar == 's')
-    {
-      MoveBottomToPos(bottomCommandedPos + 20);
-    }
-    else if(theChar == 'a')
-    {
-      MoveLeftToPos(leftCommandedPos + 20);
-      MoveRightToPos(rightCommandedPos - 20);
-    }
-    else if(theChar == 'd')
-    {
-      MoveLeftToPos(leftCommandedPos - 20);
-      MoveRightToPos(rightCommandedPos + 20);
-    }
-    else if(theChar == 'q')
-    {
-      MoveLeftToPos(leftBackwardPos);
-      MoveRightToPos(rightForwardPos);
-      MoveBottomToPos(bottomForwardPos);
-    }
-    else if(theChar == 'e')
-    {
-      MoveLeftToPos(leftForwardPos);
-      MoveRightToPos(rightBackwardPos);
-      MoveBottomToPos(bottomForwardPos);
-    }
-    else if(theChar == 'z')
-    {
-      MoveLeftToPos(leftBackwardPos);
-      MoveRightToPos(rightForwardPos);
-      MoveBottomToPos(bottomBackwardPos);
-    }
-    else if(theChar == 'x')
-    {
-      MoveLeftToPos(leftForwardPos);
-      MoveRightToPos(rightBackwardPos);
-      MoveBottomToPos(bottomBackwardPos);
-    }
-    else if(theChar == 'c')
-    {
-      MoveToCenter();
-    }
-  }
-
-  //Serial.println(analogRead(A0));
-  
+  usbMIDI.read();
 }
