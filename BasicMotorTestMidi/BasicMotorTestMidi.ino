@@ -2,16 +2,16 @@ int BottomMotorPosPin = A0;
 int RightMotorPosPin = A1;
 int LeftMotorPosPin = A2;
 
-void MoveBottomForward()
+void MoveBottomForward(int speed)
 {
-    analogWrite(3, 255);
+    analogWrite(3, speed);
     digitalWrite(4, LOW);
     digitalWrite(5, HIGH);
 }
 
-void MoveBottomBackward()
+void MoveBottomBackward(int speed)
 {
-    analogWrite(3, 255);
+    analogWrite(3, speed);
     digitalWrite(4, HIGH);
     digitalWrite(5, LOW);
 }
@@ -23,16 +23,16 @@ void StopBottom()
   digitalWrite(5, LOW);
 }
 
-void MoveLeftForward()
+void MoveLeftForward(int speed)
 {
-    analogWrite(6, 255);
+    analogWrite(6, speed);
     digitalWrite(7, LOW);
     digitalWrite(8, HIGH);
 }
 
-void MoveLeftBackward()
+void MoveLeftBackward(int speed)
 {
-    analogWrite(6, 255);
+    analogWrite(6, speed);
     digitalWrite(7, HIGH);
     digitalWrite(8, LOW);
 }
@@ -44,16 +44,16 @@ void StopLeft()
   digitalWrite(8, LOW);
 }
 
-void MoveRightForward()
+void MoveRightForward(int speed)
 {
-    analogWrite(9, 255);
+    analogWrite(9, speed);
     digitalWrite(10, LOW);
     digitalWrite(11, HIGH);
 }
 
-void MoveRightBackward()
+void MoveRightBackward(int speed)
 {
-    analogWrite(9, 255);
+    analogWrite(9, speed);
     digitalWrite(10, HIGH);
     digitalWrite(11, LOW);
 }
@@ -81,20 +81,22 @@ int ReadRightMotorPos()
 }
 
 #define THRESHOLD_POS 5
+#define THRESHOLD_ACCELERATION 10
+#define MAX_SPEED 255
 int leftForwardPos = 0;
-int leftBackwardPos = 0;
+int leftBackwardPos = 1024;
 int leftCurrentPos = 0;
 int leftCommandedPos = 0;
 int leftThresholdPos = THRESHOLD_POS;
 
 int rightForwardPos = 0;
-int rightBackwardPos = 0;
+int rightBackwardPos = 1024;
 int rightCurrentPos = 0;
 int rightCommandedPos = 0;
 int rightThresholdPos = THRESHOLD_POS;
 
 int bottomForwardPos = 0;
-int bottomBackwardPos = 0;
+int bottomBackwardPos = 1024;
 int bottomCurrentPos = 0;
 int bottomCommandedPos = 0;
 int bottomThresholdPos = THRESHOLD_POS;
@@ -120,11 +122,11 @@ void MoveBottomMotor()
 
   if(bottomCurrentPos < bottomCommandedPos - bottomThresholdPos)
   {
-    MoveBottomBackward();
+    MoveBottomBackward(MAX_SPEED);
   }
   else if(bottomCurrentPos > bottomCommandedPos + bottomThresholdPos)
   {
-    MoveBottomForward();
+    MoveBottomForward(MAX_SPEED);
   }
   else
   {
@@ -138,11 +140,11 @@ void MoveRightMotor()
 
   if(rightCurrentPos < rightCommandedPos - rightThresholdPos)
   {
-    MoveRightBackward();
+    MoveRightBackward(MAX_SPEED);
   }
   else if(rightCurrentPos > rightCommandedPos + rightThresholdPos)
   {
-    MoveRightForward();
+    MoveRightForward(MAX_SPEED);
   }
   else
   {
@@ -156,11 +158,11 @@ void MoveLeftMotor()
 
   if(leftCurrentPos < leftCommandedPos - leftThresholdPos)
   {
-    MoveLeftBackward();
+    MoveLeftBackward(MAX_SPEED);
   }
   else if(leftCurrentPos > leftCommandedPos + leftThresholdPos)
   {
-    MoveLeftForward();
+    MoveLeftForward(MAX_SPEED);
   }
   else
   {
@@ -178,18 +180,18 @@ void MoveToCenter()
 
 void InitMotors()
 {
-  MoveLeftBackward();
-  MoveBottomBackward();
-  MoveRightBackward();
+  MoveLeftBackward(MAX_SPEED);
+  MoveBottomBackward(MAX_SPEED);
+  MoveRightBackward(MAX_SPEED);
 
   delay(4000);
   leftBackwardPos = ReadLeftMotorPos();
   rightBackwardPos = ReadRightMotorPos();
   bottomBackwardPos = ReadBottomMotorPos();
 
-  MoveLeftForward();
-  MoveBottomForward();
-  MoveRightForward();
+  MoveLeftForward(MAX_SPEED);
+  MoveBottomForward(MAX_SPEED);
+  MoveRightForward(MAX_SPEED);
 
   delay(4000);
   leftForwardPos = ReadLeftMotorPos();
@@ -242,7 +244,8 @@ void setup() {
 
   usbMIDI.setHandleControlChange(OnControlChange);  
 
-  InitMotors();
+  //InitMotors();
+  MoveToCenter();
 }
 
 void loop() {
