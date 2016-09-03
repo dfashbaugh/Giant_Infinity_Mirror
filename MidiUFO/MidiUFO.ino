@@ -1,5 +1,7 @@
 #define USE_OCTOWS2811
 
+#define USE_VDMX
+
 #include<OctoWS2811.h>
 #include<FastLED.h>
 #include "CommonVariables.h"
@@ -12,6 +14,7 @@
 //Input a rateue 0 to 384 to get a color rateue.
 //The colours are a transition r - g -b - back to r
 
+int numPatterns = 17;
 unsigned int mPattern_to_patternByte(byte incomingByte)
 {
   switch (incomingByte) {
@@ -113,6 +116,20 @@ void ledCheck(){
 
 }
 
+byte DecodeVDMXPattern(int value)
+{
+  int numIncrement = 127/numPatterns;
+
+  for(int i = 0; i < numPatterns; i++)
+  {
+    if(i*numIncrement <= value && (i+1)*numIncrement > value)
+    {
+      return i;
+    }
+  }
+  return 0;
+}
+
 enum controlEnum{setBrightness = 0, setRed1 = 1, setGreen1 = 2, setBlue1 = 3, setPattern = 4, 
                  setRate = 5, setMapping = 6, setRed2 = 7, setGreen2 = 8, setBlue2 = 9};
 void OnControlChange(byte channel, byte control, byte value) {
@@ -121,7 +138,7 @@ void OnControlChange(byte channel, byte control, byte value) {
 
   if(control == setBrightness)
   {
-    // Set Brightness
+    mIndBrightness = ((float)value) / 127.0;
   }
   else if(control == setRed1)
   {
@@ -140,7 +157,25 @@ void OnControlChange(byte channel, byte control, byte value) {
   }
   else if(control == setPattern)
   {
-    // Set Pattern
+
+    #ifdef USE_VDMX
+      patternByte = mPattern_to_patternByte(DecodeVDMXPattern(value));
+    #else
+      patternByte = mPattern_to_patternByte(value);
+    #endif
+
+    if (patternByte != NULL_PATTERN && patterns[patternByte] != NULL) {
+      isOff = false;
+      pattern = patterns[patternByte];
+      pattern(-2, 0); // On select initialization
+    }
+    // Reset frame if pattern change
+    if(patternByte != lastPattern)
+    {
+      lastPattern = patternByte;
+      frame = 1000000;
+    }
+
   }
   else if(control == setRate)
   {
@@ -148,7 +183,11 @@ void OnControlChange(byte channel, byte control, byte value) {
   }
   else if(control == setMapping)
   {
-    // Set Mapping
+    #ifdef USE_VDMX
+    // Call VDMX THING
+    #else
+    // Directly Set Mapping
+    #endif
   }
   else if(control == setRed2)
   {
