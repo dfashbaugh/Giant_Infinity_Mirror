@@ -234,7 +234,7 @@ void InitMotors()
   MoveToCenter();
 }
 
-enum controlEnum{moveY = 1, moveX = 2, LEDEffect = 4};
+enum controlEnum{moveY = 1, moveX = 2};
 void OnControlChange(byte channel, byte control, byte value) {
   
   if(control == moveY)
