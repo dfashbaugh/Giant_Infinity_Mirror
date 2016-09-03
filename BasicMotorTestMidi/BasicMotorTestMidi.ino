@@ -81,55 +81,76 @@ int ReadRightMotorPos()
 }
 
 #define THRESHOLD_POS 5
-#define THRESHOLD_ACCELERATION 10
+#define THRESHOLD_ACCELERATION 20
 #define MAX_SPEED 255
 int leftForwardPos = 0;
 int leftBackwardPos = 1024;
 int leftCurrentPos = 0;
 int leftCommandedPos = 0;
 int leftThresholdPos = THRESHOLD_POS;
+int leftMillisStartMotion = 0;
+boolean leftInMotion = false;
 
 int rightForwardPos = 0;
 int rightBackwardPos = 1024;
 int rightCurrentPos = 0;
 int rightCommandedPos = 0;
 int rightThresholdPos = THRESHOLD_POS;
+int rightMillisStartMotion = 0;
+boolean rightInMotion = false;
 
 int bottomForwardPos = 0;
 int bottomBackwardPos = 1024;
 int bottomCurrentPos = 0;
 int bottomCommandedPos = 0;
 int bottomThresholdPos = THRESHOLD_POS;
+int bottomMillisStartMotion = 0;
+boolean bottomInMotion = false;
 
 void MoveBottomToPos(int position)
 {
   bottomCommandedPos = position;
+
+  if(!bottomInMotion)
+    bottomMillisStartMotion = millis();
 }
 
 void MoveLeftToPos(int position)
 {
   leftCommandedPos = position;
+
+  if(!leftInMotion)
+    leftMillisStartMotion = millis();
 }
 
 void MoveRightToPos(int position)
 {
   rightCommandedPos = position;
+
+  if(!rightInMotion)
+    rightMillisStartMotion = millis();
 }
 
 void MoveBottomMotor()
 {
   bottomCurrentPos = ReadBottomMotorPos();
 
+  int speed = millis() - bottomMillisStartMotion;
+  speed = speed / 4;
+
+  bottomInMotion = true;
+
   if(bottomCurrentPos < bottomCommandedPos - bottomThresholdPos)
   {
-    MoveBottomBackward(MAX_SPEED);
+    MoveBottomBackward(speed);
   }
   else if(bottomCurrentPos > bottomCommandedPos + bottomThresholdPos)
   {
-    MoveBottomForward(MAX_SPEED);
+    MoveBottomForward(speed);
   }
   else
   {
+    bottomInMotion = false;
     StopBottom();
   }
 }
@@ -138,16 +159,22 @@ void MoveRightMotor()
 {
   rightCurrentPos = ReadRightMotorPos();
 
+  int speed = millis() - rightMillisStartMotion;
+  speed = speed / 4;
+
+  rightInMotion = true;
+
   if(rightCurrentPos < rightCommandedPos - rightThresholdPos)
   {
-    MoveRightBackward(MAX_SPEED);
+    MoveRightBackward(speed);
   }
   else if(rightCurrentPos > rightCommandedPos + rightThresholdPos)
   {
-    MoveRightForward(MAX_SPEED);
+    MoveRightForward(speed);
   }
   else
   {
+    rightInMotion = false;
     StopRight();
   }
 }
@@ -156,16 +183,22 @@ void MoveLeftMotor()
 {
   leftCurrentPos = ReadLeftMotorPos();
 
+  int speed = millis() - leftMillisStartMotion;
+  speed = speed / 4;
+
+  leftInMotion = true;
+
   if(leftCurrentPos < leftCommandedPos - leftThresholdPos)
   {
-    MoveLeftBackward(MAX_SPEED);
+    MoveLeftBackward(speed);
   }
   else if(leftCurrentPos > leftCommandedPos + leftThresholdPos)
   {
-    MoveLeftForward(MAX_SPEED);
+    MoveLeftForward(speed);
   }
   else
   {
+    leftInMotion = false;
     StopLeft();
   }
 }
