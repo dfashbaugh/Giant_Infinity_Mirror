@@ -113,18 +113,56 @@ void ledCheck(){
 
 }
 
-enum controlEnum{setRate = 1, setRed = 2};
+enum controlEnum{setBrightness = 0, setRed1 = 1, setGreen1 = 2, setBlue1 = 3, setPattern = 4, 
+                 setRate = 5, setMapping = 6, setRed2 = 7, setGreen2 = 8, setBlue2 = 9};
 void OnControlChange(byte channel, byte control, byte value) {
   
   boolean colorChanged = false;
 
-  if(control == setRate)
+  if(control == setBrightness)
+  {
+    // Set Brightness
+  }
+  else if(control == setRed1)
+  {
+    r1 = map(value, 0, 127, 0, 255);
+    colorChanged = true;
+  }
+  else if(control == setGreen1)
+  {
+    g1 = map(value, 0, 127, 0, 255);
+    colorChanged = true;
+  }
+  else if(control == setBlue1)
+  {
+    b1 = map(value, 0, 127, 0 ,255);
+    colorChanged = true;
+  }
+  else if(control == setPattern)
+  {
+    // Set Pattern
+  }
+  else if(control == setRate)
   {
     rate = map(value, 0, 127, 0, 255);
   }
-  else if(control == setRed)
+  else if(control == setMapping)
   {
-    r1 = map(value, 0, 127, 0, 255);
+    // Set Mapping
+  }
+  else if(control == setRed2)
+  {
+    r2 = map(value, 0, 127, 0, 255);
+    colorChanged = true;
+  }
+  else if(control == setGreen2)
+  {
+    g2 = map(value, 0, 127, 0, 255);
+    colorChanged = true;
+  }
+  else if(control == setBlue2)
+  {
+    b2 = map(value, 0, 127, 0, 255);
     colorChanged = true;
   }
 
