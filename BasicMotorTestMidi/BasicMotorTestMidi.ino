@@ -81,7 +81,7 @@ int ReadRightMotorPos()
 }
 
 #define THRESHOLD_POS 5
-#define THRESHOLD_ACCELERATION 10
+#define THRESHOLD_ACCELERATION 20
 #define MAX_SPEED 255
 int leftForwardPos = 0;
 int leftBackwardPos = 1024;
