@@ -1,5 +1,4 @@
 boolean useHeartbeat = true;
-
 boolean light = false;
 
 // Uncomment this line if you want to debug

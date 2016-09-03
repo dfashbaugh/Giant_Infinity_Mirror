@@ -254,38 +254,8 @@ void setup() {
   pattern = &gradient;
 
   mIndBrightness = 255;
-
-
-
-  r1 = 255;
-  g1 = 0;
-  b1 = 0;
-  
-  r2 = 0;
-  g2 = 0;
-  b2 = 0;
-  
-  //singleColor has black second color
-  setColors();
   
   rate = mRate + 1;
-
-  if (patternByte != NULL_PATTERN && patterns[patternByte] != NULL) {
-      isOff = false;
-      pattern = patterns[69];
-      pattern(-2, 0); // On select initialization
-  }
-
-  // Reset frame if pattern change
-  if(patternByte != lastPattern)
-  {
-    lastPattern = patternByte;
-    frame = 1000000;
-  }
-
-
-
-  pattern(-2, 0);
 
   usbMIDI.setHandleControlChange(OnControlChange);
 }
