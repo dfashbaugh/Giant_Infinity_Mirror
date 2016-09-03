@@ -12,6 +12,16 @@ byte lerp(byte a, byte b, float t) {
   return a + (b - a)*t; 
 }
 
+uint32_t myColor(uint8_t r , uint8_t g , uint8_t b){
+  return ((uint32_t)(r) << 16) | ((uint32_t)(g ) <<  8) | (b );
+}
+
+uint32_t lerpColor(uint32_t a, uint32_t b, float t) {
+  return myColor(lerp(red(a), red(b), t), 
+  lerp(green(a), green(b), t), 
+  lerp(blue(a), blue(b), t));
+}
+
 float triangleWave(int frame, float rate) {
   if ((int)(frame / rate) % 2 == 0) {
     return (frame % (int)rate / rate);
@@ -19,13 +29,6 @@ float triangleWave(int frame, float rate) {
   else { 
     return 1 - (frame % (int)rate / rate);
   }
-}
-
-
-uint32_t lerpColor(uint32_t a, uint32_t b, float t) {
-  return myColor(lerp(red(a), red(b), t), 
-  lerp(green(a), green(b), t), 
-  lerp(blue(a), blue(b), t));
 }
 
 uint32_t Wheel(byte WheelPos) {
@@ -40,32 +43,3 @@ uint32_t Wheel(byte WheelPos) {
    return myColor(WheelPos * 3, 255 - WheelPos * 3, 0);
   }
 }
-
-uint32_t myColor(uint8_t r , uint8_t g , uint8_t b){
-  return ((uint32_t)(r) << 16) | ((uint32_t)(g ) <<  8) | (b );
-}
-
-boolean flatterTop(int i){
-  // i++;
-  switch (i) {
-    case 91:
-    case 90:
-    case 82:
-    case 81:
-    case 80:
-    case 79:
-    case 61:
-    case 60:
-
-    case 92:
-    case 93:
-    // case 94:
-      return true;
-      break;
-    default: 
-      return false;
-  }
-}
-
-
-
