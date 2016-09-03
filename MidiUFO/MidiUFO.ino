@@ -113,6 +113,28 @@ void ledCheck(){
 
 }
 
+enum controlEnum{setRate = 1, setRed = 2};
+void OnControlChange(byte channel, byte control, byte value) {
+  
+  boolean colorChanged = false;
+
+  if(control == setRate)
+  {
+    rate = map(value, 0, 127, 0, 255);
+  }
+  else if(control == setRed)
+  {
+    r1 = map(value, 0, 127, 0, 255);
+    colorChanged = true;
+  }
+
+  if(colorChanged)
+  {
+    setColors();
+  }
+
+}
+
 byte currentCommandBuf [READBUFFERSIZE];
 
 void setup() {
@@ -156,11 +178,44 @@ void setup() {
 
   mIndBrightness = 255;
 
+
+
+  r1 = 255;
+  g1 = 0;
+  b1 = 0;
+  
+  r2 = 0;
+  g2 = 0;
+  b2 = 0;
+  
+  //singleColor has black second color
+  setColors();
+  
+  rate = mRate + 1;
+
+  if (patternByte != NULL_PATTERN && patterns[patternByte] != NULL) {
+      isOff = false;
+      pattern = patterns[69];
+      pattern(-2, 0); // On select initialization
+  }
+
+  // Reset frame if pattern change
+  if(patternByte != lastPattern)
+  {
+    lastPattern = patternByte;
+    frame = 1000000;
+  }
+
+
+
   pattern(-2, 0);
 
+  usbMIDI.setHandleControlChange(OnControlChange);
 }
 
 void loop() {
+
+  usbMIDI.read();
 
   int usedRate = 128-rate;
   mCurrentFrameCount += abs(usedRate);
@@ -192,7 +247,7 @@ void loop() {
       g *= mIndBrightness;
       b *= mIndBrightness;
     }
-    
+
     float whiteDimmer = 0.7;
 
     if (r == g && g == b) {
