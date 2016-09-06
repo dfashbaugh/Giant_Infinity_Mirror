@@ -2,8 +2,44 @@ int BottomMotorPosPin = A0;
 int RightMotorPosPin = A1;
 int LeftMotorPosPin = A2;
 
+// Abstracted XY
+int curX = 0;
+int curY = 0;
+
+// Set by a MIDI Note
+int MaxSpeed = 255;
+enum PatternType {circleWide, circleNormal, circleSmall, zIn, zOut, 
+                  leftRightWide, leftRightNormal, leftRightSmall, rightLeftWide, 
+                  rightLeftNormal, rightLeftSmall, upDownWide, upDownNormal, upDownSmall,
+                  downUpWide, downUpNormal, downUpSmall};
+PatternType CurPattern;
+boolean RunPattern = false;
+
+struct PatternPoints
+{
+  int x;
+  int y;
+};
+
+// Pattern Rules:
+// * The first -1 encounted as an x or y coordinate indicates an end to the pattern
+// * Patterns max out at 300 points.
+// * A pattern will only execute when RunPattern is true
+#define PATTERN_POINT_LIST_SIZE 300
+PatternPoints curPatternPoints [PATTERN_POINT_LIST_SIZE];
+
+
+int clipSpeed(int speed)
+{
+  if(speed > MaxSpeed)
+    return MaxSpeed;
+
+  return speed;
+}
+
 void MoveBottomForward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(3, speed);
     digitalWrite(4, LOW);
     digitalWrite(5, HIGH);
@@ -11,6 +47,7 @@ void MoveBottomForward(int speed)
 
 void MoveBottomBackward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(3, speed);
     digitalWrite(4, HIGH);
     digitalWrite(5, LOW);
@@ -25,6 +62,7 @@ void StopBottom()
 
 void MoveLeftForward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(6, speed);
     digitalWrite(7, LOW);
     digitalWrite(8, HIGH);
@@ -32,6 +70,7 @@ void MoveLeftForward(int speed)
 
 void MoveLeftBackward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(6, speed);
     digitalWrite(7, HIGH);
     digitalWrite(8, LOW);
@@ -46,6 +85,7 @@ void StopLeft()
 
 void MoveRightForward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(9, speed);
     digitalWrite(10, LOW);
     digitalWrite(11, HIGH);
@@ -53,6 +93,7 @@ void MoveRightForward(int speed)
 
 void MoveRightBackward(int speed)
 {
+    speed = clipSpeed(speed);
     analogWrite(9, speed);
     digitalWrite(10, HIGH);
     digitalWrite(11, LOW);
@@ -107,6 +148,11 @@ int bottomThresholdPos = THRESHOLD_POS;
 int bottomMillisStartMotion = 0;
 boolean bottomInMotion = false;
 
+int globalMaxX = 1024;
+int globalMaxY = 1024;
+int centerX = 512;
+int centerY = 512;
+
 void MoveBottomToPos(int position)
 {
   bottomCommandedPos = position;
@@ -129,6 +175,17 @@ void MoveRightToPos(int position)
 
   if(!rightInMotion)
     rightMillisStartMotion = millis();
+}
+
+void MoveX(int position)
+{
+  MoveLeftToPos(position);
+  MoveRightToPos(1024 - position);
+}
+
+void MoveY(int position)
+{
+  MoveBottomToPos(position);
 }
 
 void MoveBottomMotor()
@@ -206,9 +263,8 @@ void MoveLeftMotor()
 void MoveToCenter()
 {
   // Move To Center
-  MoveLeftToPos( (leftBackwardPos + leftForwardPos)/2 );
-  MoveRightToPos( (rightBackwardPos + rightForwardPos)/2 );
-  MoveBottomToPos( (bottomBackwardPos + bottomForwardPos)/2 );
+  MoveX(centerX);
+  MoveY(centerY);
 }
 
 void InitMotors()
@@ -239,15 +295,49 @@ void OnControlChange(byte channel, byte control, byte value) {
   
   if(control == moveY)
   {
-    MoveBottomToPos(map(value, 0, 127, 1024, 0));
+    MoveY(map(value, 0, 127, 1024, 0));
   }
   else if(control == moveX)
   {
     digitalWrite(13, HIGH);
-    MoveLeftToPos(map(value, 0,127, 0, 1024));
-    MoveRightToPos(map(value, 0, 127, 1024, 0));
+    MoveX(map(value, 0,127, 0, 1024));
   } 
 
+}
+
+// Pattern Calculations
+void CalculateLeftRightPattern(int maxX, int maxY)
+{
+  PatternPoints myPoint;
+  myPoint.x = maxX;
+  myPoint.y = centerY;
+  curPatternPoints[0] = myPoint;
+  myPoint.x = globalMaxX - maxX;
+  myPoint.y = centerY;
+  curPatternPoints[1] = myPoint;
+
+  for(int i = 2; i < PATTERN_POINT_LIST_SIZE; i++)
+  {
+    PatternPoints nullPoint;
+    nullPoint.x = -1;
+    nullPoint.y = -1;
+    curPatternPoints[i] = nullPoint;
+  }
+}
+
+void CalculateLeftRightWidePattern()
+{
+  CalculateLeftRightPattern(1000, 1000);
+}
+
+void CalculateLeftRightNormalPattern()
+{
+  CalculateLeftRightPattern(700, 700);
+}
+
+void CalculateLeftRightSmallPattern()
+{
+  CalculateLeftRightPattern(400, 400);
 }
 
 void setup() {
