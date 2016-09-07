@@ -344,6 +344,18 @@ void OnNoteOn(byte channel, byte note, byte velocity)
       CalculateZinPattern();
     else if(note == zOut)
       CalculateZOutPattern();
+    else if(note == leftRightWide)
+      CalculateLeftRightWidePattern();
+    else if(note == leftRightNormal)
+      CalculateLeftRightNormalPattern();
+    else if(note == leftRightSmall)
+      CalculateLeftRightSmallPattern();
+    else if(note == upDownWide)
+      CalculateUpDownWidePattern();
+    else if(note == upDownNormal)
+      CalculateUpDownNormalPattern();
+    else if(note == upDownSmall)
+      CalculateUpDownSmallPattern();
   }
 
 }
