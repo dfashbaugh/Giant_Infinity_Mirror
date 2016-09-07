@@ -19,6 +19,8 @@ struct PatternPoints
 {
   int x;
   int y;
+  bool zIn = false;
+  bool zOut = false;
 };
 
 // Pattern Rules:
@@ -306,7 +308,18 @@ void OnControlChange(byte channel, byte control, byte value) {
 }
 
 // Pattern Calculations
-void CalculateLeftRightPattern(int maxX, int maxY)
+void FillEmptyPatternSlots(int startSlot)
+{
+  for(int i = startSlot; i < PATTERN_POINT_LIST_SIZE; i++)
+  {
+    PatternPoints nullPoint;
+    nullPoint.x = -1;
+    nullPoint.y = -1;
+    curPatternPoints[i] = nullPoint;
+  }
+}
+
+void CalculateLeftRightPattern(int maxX)
 {
   PatternPoints myPoint;
   myPoint.x = maxX;
@@ -316,28 +329,102 @@ void CalculateLeftRightPattern(int maxX, int maxY)
   myPoint.y = centerY;
   curPatternPoints[1] = myPoint;
 
-  for(int i = 2; i < PATTERN_POINT_LIST_SIZE; i++)
-  {
-    PatternPoints nullPoint;
-    nullPoint.x = -1;
-    nullPoint.y = -1;
-    curPatternPoints[i] = nullPoint;
-  }
+  FillEmptyPatternSlots(2);
 }
 
 void CalculateLeftRightWidePattern()
 {
-  CalculateLeftRightPattern(1000, 1000);
+  CalculateLeftRightPattern(1000);
 }
 
 void CalculateLeftRightNormalPattern()
 {
-  CalculateLeftRightPattern(700, 700);
+  CalculateLeftRightPattern(700);
 }
 
 void CalculateLeftRightSmallPattern()
 {
-  CalculateLeftRightPattern(400, 400);
+  CalculateLeftRightPattern(400);
+}
+
+void CalculateUpDownPattern(int maxY)
+{
+  PatternPoints myPoint;
+  myPoint.x = centerX;
+  myPoint.y = maxY;
+  curPatternPoints[0] = myPoint;
+  myPoint.x = centerX;
+  myPoint.y = globalMaxY - maxY;
+  curPatternPoints[1] = myPoint;
+
+  FillEmptyPatternSlots(2);
+}
+
+void CalculateUpDownWidePattern()
+{
+  CalculateUpDownPattern(1000);
+}
+
+void CalculateUpDownNormalPattern()
+{
+  CalculateUpDownPattern(700);
+}
+
+void CalculateUpDownSmallPattern()
+{
+  CalculateUpDownPattern(400);
+}
+
+void CalculateZinPattern()
+{
+  PatternPoints myPoint;
+  myPoint.zIn = true;
+  curPatternPoints[0] = myPoint;
+
+  FillEmptyPatternSlots(1);
+}
+
+void CalculateZOutPattern()
+{
+  PatternPoints myPoint;
+  myPoint.zOut = true;
+  curPatternPoints[0] = myPoint;
+
+  FillEmptyPatternSlots(1);
+}
+
+void CalculateCirclePattern(int radius)
+{
+  int count = 0;
+  for(double i = 0; i < 360; i+= 5)
+  {
+    double radAngle = (i*3.14159)/180;
+    int x = centerX + radius*cos(radAngle);
+    int y = centerY + radius*sin(radAngle);
+
+    PatternPoints myPoint;
+    myPoint.x = x;
+    myPoint.y = y;
+    curPatternPoints[count];
+    count++;
+  }
+
+  FillEmptyPatternSlots(count);
+}
+
+void CalculateCircleWidePattern()
+{
+  CalculateCirclePattern(400);
+}
+
+void CalculateCircleNormalPattern()
+{
+  CalculateCirclePattern(300);
+}
+
+void CalculateCircleSmallPattern()
+{
+  CalculateCirclePattern(200);
 }
 
 void setup() {
