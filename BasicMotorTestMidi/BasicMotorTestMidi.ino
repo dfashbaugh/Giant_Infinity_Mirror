@@ -214,7 +214,7 @@ void MoveRightToPos(int position)
 void MoveX(int position)
 {
   MoveLeftToPos(position);
-  MoveRightToPos(1024 - position);
+  MoveRightToPos(globalMaxX - position);
 }
 
 void MoveY(int position)
