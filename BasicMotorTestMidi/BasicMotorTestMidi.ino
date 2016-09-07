@@ -229,13 +229,15 @@ void MoveBottomMotor()
   int speed = millis() - bottomMillisStartMotion;
   speed = speed / 4;
 
-  bottomInMotion = true;
-
-  if(bottomCurrentPos < bottomCommandedPos - bottomThresholdPos)
+  if(!bottomInMotion && ( (bottomCommandedPos < bottomCurrentPos - bottomThresholdPos) || (bottomCommandedPos > bottomCurrentPos + bottomThresholdPos)))
+  {
+    bottomInMotion = true;
+  }
+  else if(bottomCurrentPos < bottomCommandedPos)
   {
     MoveBottomBackward(speed);
   }
-  else if(bottomCurrentPos > bottomCommandedPos + bottomThresholdPos)
+  else if(bottomCurrentPos > bottomCommandedPos)
   {
     MoveBottomForward(speed);
   }
@@ -253,13 +255,16 @@ void MoveRightMotor()
   int speed = millis() - rightMillisStartMotion;
   speed = speed / 4;
 
-  rightInMotion = true;
-
-  if(rightCurrentPos < rightCommandedPos - rightThresholdPos)
+  // Do not attempt to move until the commanded position exceeds the threshold
+  if(!rightInMotion && ((rightCommandedPos < rightCurrentPos - rightThresholdPos) || (rightCommandedPos > rightCurrentPos + rightThresholdPos)) )
+  {
+      rightInMotion = true;
+  }
+  else if(rightCurrentPos < rightCommandedPos)
   {
     MoveRightBackward(speed);
   }
-  else if(rightCurrentPos > rightCommandedPos + rightThresholdPos)
+  else if(rightCurrentPos > rightCommandedPos)
   {
     MoveRightForward(speed);
   }
@@ -277,13 +282,16 @@ void MoveLeftMotor()
   int speed = millis() - leftMillisStartMotion;
   speed = speed / 4;
 
-  leftInMotion = true;
-
-  if(leftCurrentPos < leftCommandedPos - leftThresholdPos)
+  // Do not attempt to move until the commanded position exceeds the threshold
+  if(!leftInMotion && ((leftCommandedPos < leftCurrentPos - leftThresholdPos) || (leftCommandedPos > leftCurrentPos + leftThresholdPos)) )
+  {
+      leftInMotion = true;
+  }
+  else if(leftCurrentPos < leftCommandedPos)
   {
     MoveLeftBackward(speed);
   }
-  else if(leftCurrentPos > leftCommandedPos + leftThresholdPos)
+  else if(leftCurrentPos > leftCommandedPos)
   {
     MoveLeftForward(speed);
   }
