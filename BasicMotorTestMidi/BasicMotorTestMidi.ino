@@ -9,10 +9,26 @@ int curY = 0;
 // Set by a MIDI Note
 int CurPatternFrame = 0;
 int MaxSpeed = 255;
-enum PatternType {circleWide, circleNormal, circleSmall, zIn, zOut, 
-                  leftRightWide, leftRightNormal, leftRightSmall, rightLeftWide, 
-                  rightLeftNormal, rightLeftSmall, upDownWide, upDownNormal, upDownSmall,
-                  downUpWide, downUpNormal, downUpSmall};
+int maxValidPattern = 76;
+int minValidPattern = 60;
+enum PatternType {circleWide      = 60, 
+                  circleNormal    = 61, 
+                  circleSmall     = 62, 
+                  zIn             = 63, 
+                  zOut            = 64, 
+                  leftRightWide   = 65, 
+                  leftRightNormal = 66, 
+                  leftRightSmall  = 67, 
+                  rightLeftWide   = 68, 
+                  rightLeftNormal = 69, 
+                  rightLeftSmall  = 70, 
+                  upDownWide      = 71, 
+                  upDownNormal    = 72, 
+                  upDownSmall     = 73,
+                  downUpWide      = 74, 
+                  downUpNormal    = 75, 
+                  downUpSmall     = 76
+                };
 PatternType CurPattern;
 boolean RunPattern = false;
 
@@ -298,13 +314,37 @@ void OnControlChange(byte channel, byte control, byte value) {
   
   if(control == moveY)
   {
+    RunPattern = false;
     MoveY(map(value, 0, 127, 1024, 0));
   }
   else if(control == moveX)
   {
+    RunPattern = false;
     digitalWrite(13, HIGH);
     MoveX(map(value, 0,127, 0, 1024));
   } 
+
+}
+
+// Start at Middle C and move up
+void OnNoteOn(byte channel, byte note, byte velocity)
+{
+  MaxSpeed = map(velocity, 0, 127, 0, 255);
+
+  if(note >= minValidPattern && note <= maxValidPattern)
+  {
+    RunPattern = true;
+    if(note == circleWide)
+      CalculateCircleWidePattern();
+    else if(note == circleNormal)
+      CalculateCircleNormalPattern();
+    else if(note == circleSmall)
+      CalculateCircleSmallPattern();
+    else if(note == zIn)
+      CalculateZinPattern();
+    else if(note == zOut)
+      CalculateZOutPattern();
+  }
 
 }
 
@@ -486,6 +526,7 @@ void setup() {
   }
 
   usbMIDI.setHandleControlChange(OnControlChange);  
+  usbMIDI.setHandleNoteOn(OnNoteOn);
 
   //InitMotors();
   MoveToCenter();
