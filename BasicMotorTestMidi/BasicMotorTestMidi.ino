@@ -7,6 +7,7 @@ int curX = 0;
 int curY = 0;
 
 // Set by a MIDI Note
+int CurPatternFrame = 0;
 int MaxSpeed = 255;
 enum PatternType {circleWide, circleNormal, circleSmall, zIn, zOut, 
                   leftRightWide, leftRightNormal, leftRightSmall, rightLeftWide, 
@@ -427,6 +428,38 @@ void CalculateCircleSmallPattern()
   CalculateCirclePattern(200);
 }
 
+void ExecutePattern()
+{
+  if(!rightInMotion && !leftInMotion && !bottomInMotion)
+  {
+    PatternPoints thePoint = curPatternPoints[CurPatternFrame];
+
+    if(thePoint.zIn)
+    {
+      MoveRightToPos(0);
+      MoveLeftToPos(0);
+      MoveBottomToPos(0);
+    }
+    else if(thePoint.zOut)
+    {
+      MoveRightToPos(1024);
+      MoveLeftToPos(1024);
+      MoveBottomToPos(1024);
+    }
+    else if(thePoint.x < 0 || thePoint.y < 0)
+    {
+      CurPatternFrame = 0;
+    }
+    else
+    {
+      MoveX(thePoint.x);
+      MoveY(thePoint.y);
+      CurPatternFrame++;
+    }
+
+  }
+}
+
 void setup() {
 
   pinMode(13, OUTPUT);
@@ -459,6 +492,12 @@ void setup() {
 }
 
 void loop() {
+
+  if(RunPattern)
+  {
+    ExecutePattern();
+  }
+
   // put your main code here, to run repeatedly:
   MoveBottomMotor();
   MoveRightMotor();
