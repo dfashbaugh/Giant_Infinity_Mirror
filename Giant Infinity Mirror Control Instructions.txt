@@ -18,8 +18,29 @@ LED Controller:
  - X -> Ctrl 2
  - Y -> Ctrl 1
 
+ XY Pattern Control Notes
+ Velocity of Note determines velocity of mirror
+ - circleWide      = 60  (C4)
+ - circleNormal    = 61
+ - circleSmall     = 62
+ - zIn             = 63
+ - zOut            = 64
+ - leftRightWide   = 65
+ - leftRightNormal = 66
+ - leftRightSmall  = 67
+ - rightLeftWide   = 68
+ - rightLeftNormal = 69
+ - rightLeftSmall  = 70
+ - upDownWide      = 71
+ - upDownNormal    = 72
+ - upDownSmall     = 73
+ - downUpWide      = 74
+ - downUpNormal    = 75
+ - downUpSmall     = 76
+
 
  Wiring:
+ 	3.3v Logic
  	Motor Bottom
  		- PWM -> 3
  		- INA -> 4
