@@ -143,24 +143,24 @@ int ReadRightMotorPos()
 #define THRESHOLD_POS 5
 #define THRESHOLD_ACCELERATION 20
 #define MAX_SPEED 255
-int leftForwardPos = 0;
-int leftBackwardPos = 1024;
+int leftForwardPos = 200;
+int leftBackwardPos = 800;
 int leftCurrentPos = 0;
 int leftCommandedPos = 0;
 int leftThresholdPos = THRESHOLD_POS;
 int leftMillisStartMotion = 0;
 boolean leftInMotion = false;
 
-int rightForwardPos = 0;
-int rightBackwardPos = 1024;
+int rightForwardPos = 200;
+int rightBackwardPos = 800;
 int rightCurrentPos = 0;
 int rightCommandedPos = 0;
 int rightThresholdPos = THRESHOLD_POS;
 int rightMillisStartMotion = 0;
 boolean rightInMotion = false;
 
-int bottomForwardPos = 0;
-int bottomBackwardPos = 1024;
+int bottomForwardPos = 200;
+int bottomBackwardPos = 800;
 int bottomCurrentPos = 0;
 int bottomCommandedPos = 0;
 int bottomThresholdPos = THRESHOLD_POS;
@@ -174,6 +174,11 @@ int centerY = 512;
 
 void MoveBottomToPos(int position)
 {
+  if(position > bottomBackwardPos)
+    position = bottomBackwardPos;
+  else if(position < bottomForwardPos)
+    position = bottomForwardPos;
+
   bottomCommandedPos = position;
 
   if(!bottomInMotion)
@@ -182,6 +187,11 @@ void MoveBottomToPos(int position)
 
 void MoveLeftToPos(int position)
 {
+  if(position > leftBackwardPos)
+    position = leftBackwardPos;
+  else if(position < leftForwardPos)
+    position = leftForwardPos;
+
   leftCommandedPos = position;
 
   if(!leftInMotion)
@@ -190,6 +200,11 @@ void MoveLeftToPos(int position)
 
 void MoveRightToPos(int position)
 {
+  if(position > rightBackwardPos)
+    position = rightBackwardPos;
+  else if(position < rightForwardPos)
+    position = rightForwardPos;
+
   rightCommandedPos = position;
 
   if(!rightInMotion)
@@ -511,16 +526,16 @@ void ExecutePattern()
 
     if(thePoint.zIn)
     {
-      MoveRightToPos(0);
-      MoveLeftToPos(0);
-      MoveBottomToPos(0);
+      MoveRightToPos(rightForwardPos);
+      MoveLeftToPos(leftForwardPos);
+      MoveBottomToPos(bottomBackwardPos);
       Serial.println("Move Z In");
     }
     else if(thePoint.zOut)
     {
-      MoveRightToPos(1024);
-      MoveLeftToPos(1024);
-      MoveBottomToPos(1024);
+      MoveRightToPos(rightBackwardPos);
+      MoveLeftToPos(leftBackwardPos);
+      MoveBottomToPos(bottomBackwardPos);
       Serial.println("Move Z Out");
     }
     else if(thePoint.x < 0 || thePoint.y < 0)
