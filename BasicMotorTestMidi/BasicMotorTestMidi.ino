@@ -331,9 +331,15 @@ void OnNoteOn(byte channel, byte note, byte velocity)
 {
   MaxSpeed = map(velocity, 0, 127, 0, 255);
 
+  Serial.print("Note Received: ");
+  Serial.println(note);
+  Serial.print("Velocity: ");
+  Serial.println(velocity);
+
   if(note >= minValidPattern && note <= maxValidPattern)
   {
     RunPattern = true;
+    CurPatternFrame = 0;
     if(note == circleWide)
       CalculateCircleWidePattern();
     else if(note == circleNormal)
@@ -377,9 +383,13 @@ void CalculateLeftRightPattern(int maxX)
   PatternPoints myPoint;
   myPoint.x = maxX;
   myPoint.y = centerY;
+  myPoint.zIn = false;
+  myPoint.zOut =false;
   curPatternPoints[0] = myPoint;
   myPoint.x = globalMaxX - maxX;
   myPoint.y = centerY;
+  myPoint.zIn = false;
+  myPoint.zOut =false;
   curPatternPoints[1] = myPoint;
 
   FillEmptyPatternSlots(2);
@@ -387,17 +397,17 @@ void CalculateLeftRightPattern(int maxX)
 
 void CalculateLeftRightWidePattern()
 {
-  CalculateLeftRightPattern(1000);
+  CalculateLeftRightPattern(600);
 }
 
 void CalculateLeftRightNormalPattern()
 {
-  CalculateLeftRightPattern(700);
+  CalculateLeftRightPattern(400);
 }
 
 void CalculateLeftRightSmallPattern()
 {
-  CalculateLeftRightPattern(400);
+  CalculateLeftRightPattern(200);
 }
 
 void CalculateUpDownPattern(int maxY)
@@ -405,9 +415,13 @@ void CalculateUpDownPattern(int maxY)
   PatternPoints myPoint;
   myPoint.x = centerX;
   myPoint.y = maxY;
+  myPoint.zIn = false;
+  myPoint.zOut =false;
   curPatternPoints[0] = myPoint;
   myPoint.x = centerX;
   myPoint.y = globalMaxY - maxY;
+  myPoint.zIn = false;
+  myPoint.zOut =false;
   curPatternPoints[1] = myPoint;
 
   FillEmptyPatternSlots(2);
@@ -415,17 +429,17 @@ void CalculateUpDownPattern(int maxY)
 
 void CalculateUpDownWidePattern()
 {
-  CalculateUpDownPattern(1000);
+  CalculateUpDownPattern(600);
 }
 
 void CalculateUpDownNormalPattern()
 {
-  CalculateUpDownPattern(700);
+  CalculateUpDownPattern(400);
 }
 
 void CalculateUpDownSmallPattern()
 {
-  CalculateUpDownPattern(400);
+  CalculateUpDownPattern(200);
 }
 
 void CalculateZinPattern()
@@ -454,11 +468,17 @@ void CalculateCirclePattern(int radius)
     double radAngle = (i*3.14159)/180;
     int x = centerX + radius*cos(radAngle);
     int y = centerY + radius*sin(radAngle);
+    Serial.println("Start Circle");
+    Serial.println(radAngle);
+    Serial.println(x);
+    Serial.println(y);
 
     PatternPoints myPoint;
     myPoint.x = x;
     myPoint.y = y;
-    curPatternPoints[count];
+    myPoint.zIn = false;
+    myPoint.zOut =false;
+    curPatternPoints[count] = myPoint;
     count++;
   }
 
@@ -467,23 +487,26 @@ void CalculateCirclePattern(int radius)
 
 void CalculateCircleWidePattern()
 {
-  CalculateCirclePattern(400);
+  CalculateCirclePattern(200);
 }
 
 void CalculateCircleNormalPattern()
 {
-  CalculateCirclePattern(300);
+  CalculateCirclePattern(100);
 }
 
 void CalculateCircleSmallPattern()
 {
-  CalculateCirclePattern(200);
+  CalculateCirclePattern(50);
 }
 
 void ExecutePattern()
 {
+
   if(!rightInMotion && !leftInMotion && !bottomInMotion)
   {
+    Serial.println("Execute Next Frame");
+
     PatternPoints thePoint = curPatternPoints[CurPatternFrame];
 
     if(thePoint.zIn)
@@ -491,22 +514,32 @@ void ExecutePattern()
       MoveRightToPos(0);
       MoveLeftToPos(0);
       MoveBottomToPos(0);
+      Serial.println("Move Z In");
     }
     else if(thePoint.zOut)
     {
       MoveRightToPos(1024);
       MoveLeftToPos(1024);
       MoveBottomToPos(1024);
+      Serial.println("Move Z Out");
     }
     else if(thePoint.x < 0 || thePoint.y < 0)
     {
       CurPatternFrame = 0;
+      Serial.println("Reset Frame Count");
     }
     else
     {
       MoveX(thePoint.x);
       MoveY(thePoint.y);
       CurPatternFrame++;
+
+      Serial.print("Execute Frame: ");
+      Serial.print(CurPatternFrame);
+      Serial.print("  DestX: "); 
+      Serial.print(thePoint.x);
+      Serial.print("  DestY: "); 
+      Serial.println(thePoint.y);
     }
 
   }
