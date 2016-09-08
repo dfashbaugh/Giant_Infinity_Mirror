@@ -140,7 +140,7 @@ int ReadRightMotorPos()
   return analogRead(RightMotorPosPin);
 }
 
-#define THRESHOLD_POS 5
+#define THRESHOLD_POS 10
 #define THRESHOLD_ACCELERATION 20
 #define MAX_SPEED 255
 int leftForwardPos = 200;
@@ -244,7 +244,8 @@ void MoveBottomMotor()
   else
   {
     bottomInMotion = false;
-    StopBottom();
+    if(!RunPattern)
+      StopBottom();
   }
 }
 
@@ -271,7 +272,8 @@ void MoveRightMotor()
   else
   {
     rightInMotion = false;
-    StopRight();
+    if(!RunPattern)
+      StopRight();
   }
 }
 
@@ -298,7 +300,8 @@ void MoveLeftMotor()
   else
   {
     leftInMotion = false;
-    StopLeft();
+    if(!RunPattern)
+      StopLeft();
   }
 }
 
@@ -486,7 +489,7 @@ void CalculateZOutPattern()
 void CalculateCirclePattern(int radius)
 {
   int count = 0;
-  for(double i = 0; i < 360; i+= 5)
+  for(double i = 0; i < 360; i+= 30)
   {
     double radAngle = (i*3.14159)/180;
     int x = centerX + radius*cos(radAngle);
@@ -536,7 +539,7 @@ void ExecutePattern()
     {
       MoveRightToPos(rightForwardPos);
       MoveLeftToPos(leftForwardPos);
-      MoveBottomToPos(bottomBackwardPos);
+      MoveBottomToPos(bottomForwardPos);
       Serial.println("Move Z In");
     }
     else if(thePoint.zOut)
