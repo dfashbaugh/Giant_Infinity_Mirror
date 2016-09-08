@@ -156,14 +156,14 @@ void SetNewMapping(int value)
   {
     mapping = &longSnake;
   }
-  else if(value == 6)
+  else if(value > 6)
   {
     mapping = &dekonstruktor;
   }
-  else if(value == 7)
-  {
-    mapping = &dekonstruktorRando;
-  }
+  //else if(value == 7)
+  //{
+  //  mapping = &dekonstruktorRando;
+  //}
 }
 
 enum controlEnum{setBrightness = 0, setRed1 = 1, setGreen1 = 2, setBlue1 = 3, setPattern = 4, 
