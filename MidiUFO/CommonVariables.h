@@ -4,8 +4,9 @@ boolean light = false;
 // Uncomment this line if you want to debug
 //#define RUN_DEBUG 1
 unsigned long debugTimer = 0;
-#define NUM_STRIPS 6
-#define NUM_LEDS_PER_STRIP 250
+#define NUM_STRIPS 8
+#define NUM_LEDS_PER_STRIP 464
+#define TRUE_NUM_LEDS_PER_STRIP 232
 
 const int totalLEDs = NUM_LEDS_PER_STRIP * NUM_STRIPS;
 
@@ -62,3 +63,7 @@ typedef uint32_t (*Pattern)(long, int);
 
 Pattern patterns[128];
 Pattern pattern;
+
+typedef int (*Mapping)(long, int);
+
+Mapping mapping;
