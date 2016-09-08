@@ -40,15 +40,9 @@ LED Controller:
  - leftRightWide   = 65
  - leftRightNormal = 66
  - leftRightSmall  = 67
- - rightLeftWide   = 68
- - rightLeftNormal = 69
- - rightLeftSmall  = 70
  - upDownWide      = 71
  - upDownNormal    = 72
  - upDownSmall     = 73
- - downUpWide      = 74
- - downUpNormal    = 75
- - downUpSmall     = 76
 
 
  Wiring:
