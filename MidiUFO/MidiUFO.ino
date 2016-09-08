@@ -148,6 +148,14 @@ void SetNewMapping(int value)
   {
     mapping = &intoSpace;
   }
+  else if(value == 4)
+  {
+    mapping = &shortSnake;
+  }
+  else if(value == 5)
+  {
+    mapping = &longSnake;
+  }
 }
 
 enum controlEnum{setBrightness = 0, setRed1 = 1, setGreen1 = 2, setBlue1 = 3, setPattern = 4, 
