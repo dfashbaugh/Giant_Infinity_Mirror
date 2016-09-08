@@ -1,0 +1,5 @@
+232 LEDs are in each strip
+We have 11 strips
+Octo outputs 7 and 8 are wired as so:
+7 -> 7,8
+8 -> 9, 10, 11

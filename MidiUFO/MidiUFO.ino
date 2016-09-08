@@ -130,6 +130,26 @@ byte DecodeVDMXPattern(int value)
   return 0;
 }
 
+void SetNewMapping(int value)
+{
+  if(value == 0)
+  {
+    mapping = &forward;
+  }
+  else if(value == 1)
+  {
+    mapping = &backward;
+  }
+  else if(value == 2)
+  {
+    mapping = &snake;
+  }
+  else if(value == 3)
+  {
+    mapping = &intoSpace;
+  }
+}
+
 enum controlEnum{setBrightness = 0, setRed1 = 1, setGreen1 = 2, setBlue1 = 3, setPattern = 4, 
                  setRate = 5, setMapping = 6, setRed2 = 7, setGreen2 = 8, setBlue2 = 9};
 void OnControlChange(byte channel, byte control, byte value) {
@@ -183,11 +203,7 @@ void OnControlChange(byte channel, byte control, byte value) {
   }
   else if(control == setMapping)
   {
-    #ifdef USE_VDMX
-    // Call VDMX THING
-    #else
-    // Directly Set Mapping
-    #endif
+    SetNewMapping(value);
   }
   else if(control == setRed2)
   {
@@ -252,6 +268,7 @@ void setup() {
   rate = 122;
   // pattern = &pulseOnce;
   pattern = &gradient;
+  mapping = &intoSpace;
 
   mIndBrightness = 255;
   
@@ -282,7 +299,8 @@ void loop() {
 
   for (int i = 0; i < totalLEDs; i++) {
 
-    uint32_t color = pattern(frame, i);
+    int j = mapping(frame, i);
+    uint32_t color = pattern(frame, j);
 
     uint8_t r = ((color & 0xFF0000) >> 16);
     uint8_t g = ((color & 0x00FF00) >> 8);
