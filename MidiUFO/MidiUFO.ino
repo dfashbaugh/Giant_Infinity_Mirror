@@ -156,9 +156,13 @@ void SetNewMapping(int value)
   {
     mapping = &longSnake;
   }
-  else if(value > 6)
+  else if(value == 6)
   {
     mapping = &dekonstruktor;
+  }
+  else if(value > 7)
+  {
+    mapping = &deskonstruktorIntoSpace;
   }
   //else if(value == 7)
   //{

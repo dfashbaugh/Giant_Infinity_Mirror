@@ -47,7 +47,7 @@ int dekonstruktor(long frame, int i)
   } 
 }
 
-int dekonstruktorRando(long frame, int i)
+int deskonstruktorIntoSpace(long frame, int i)
 {
-  return i+random(frame%400);
+  return dekonstruktor(frame, intoSpace(frame, i));
 }
