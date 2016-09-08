@@ -34,3 +34,20 @@ int shortSnake(long frame, int i)
 {
   return i*2;
 }
+
+int dekonstruktor(long frame, int i)
+{
+  if(frame%400 > 400)
+  {
+    return i+(frame%200/30);
+  }
+  else
+  {
+    return i + 200/30 - (frame%200/30);
+  } 
+}
+
+int dekonstruktorRando(long frame, int i)
+{
+  return i+random(frame%400);
+}
