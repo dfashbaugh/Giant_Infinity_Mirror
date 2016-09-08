@@ -43,6 +43,10 @@ LED Controller:
  - upDownWide      = 71
  - upDownNormal    = 72
  - upDownSmall     = 73
+ - sendToRight     = 77,
+- sendToLeft      = 78,
+- sendToUp        = 79,
+- sendToDown      = 80
 
 
  Wiring:
