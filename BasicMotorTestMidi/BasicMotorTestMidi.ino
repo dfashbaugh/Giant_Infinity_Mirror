@@ -9,7 +9,7 @@ int curY = 0;
 // Set by a MIDI Note
 int CurPatternFrame = 0;
 int MaxSpeed = 255;
-int maxValidPattern = 76;
+int maxValidPattern = 80;
 int minValidPattern = 60;
 enum PatternType {circleWide      = 60, 
                   circleNormal    = 61, 
@@ -27,7 +27,11 @@ enum PatternType {circleWide      = 60,
                   upDownSmall     = 73,
                   downUpWide      = 74, 
                   downUpNormal    = 75, 
-                  downUpSmall     = 76
+                  downUpSmall     = 76,
+                  sendToRight     = 77,
+                  sendToLeft      = 78,
+                  sendToUp        = 79,
+                  sendToDown      = 80
                 };
 PatternType CurPattern;
 boolean RunPattern = false;
@@ -388,6 +392,14 @@ void OnNoteOn(byte channel, byte note, byte velocity)
       CalculateUpDownNormalPattern();
     else if(note == upDownSmall)
       CalculateUpDownSmallPattern();
+    else if(note == sendToDown)
+      CalculateDownPattern(800);
+    else if(note == sendToUp)
+      CalculateDownPattern(200);
+    else if(note == sendToRight)
+      CalculateRightPattern(200);
+    else if(note == sendToLeft)
+      CalculateRightPattern(800);
   }
 
 }
@@ -402,6 +414,28 @@ void FillEmptyPatternSlots(int startSlot)
     nullPoint.y = -1;
     curPatternPoints[i] = nullPoint;
   }
+}
+
+void CalculateDownPattern(int maxY)
+{
+  PatternPoints myPoint;
+  myPoint.x = centerX;
+  myPoint.y = maxY;
+
+  curPatternPoints[0] = myPoint;
+
+  FillEmptyPatternSlots(1);
+}
+
+void CalculateRightPattern(int maxX)
+{
+    PatternPoints myPoint;
+  myPoint.x = maxX;
+  myPoint.y = centerY;
+
+  curPatternPoints[0] = myPoint;
+
+  FillEmptyPatternSlots(1);
 }
 
 void CalculateLeftRightPattern(int maxX)
