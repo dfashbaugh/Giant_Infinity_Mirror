@@ -4,5 +4,5 @@ This code controls the Giant Infinity Mirror used by Chrome Sparks. It uses MIDI
 XY position of the motors. It uses MIDI notes to control the lighting.
 
 Links:
-https://www.instagram.com/p/BLRGsgMD8Vg/
-https://www.instagram.com/p/BKHOpYajTKf/
+* https://www.instagram.com/p/BLRGsgMD8Vg/
+* https://www.instagram.com/p/BKHOpYajTKf/
