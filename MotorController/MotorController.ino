@@ -63,6 +63,7 @@ int clipSpeed(int speed)
 void MoveBottomForward(int speed)
 {
     speed = clipSpeed(speed);
+    speed *= 0.8;
     analogWrite(3, speed);
     digitalWrite(4, LOW);
     digitalWrite(5, HIGH);
@@ -71,6 +72,7 @@ void MoveBottomForward(int speed)
 void MoveBottomBackward(int speed)
 {
     speed = clipSpeed(speed);
+    speed *= 0.8;
     analogWrite(3, speed);
     digitalWrite(4, HIGH);
     digitalWrite(5, LOW);
@@ -342,18 +344,20 @@ void InitMotors()
 enum controlEnum{moveY = 1, moveX = 2};
 void OnControlChange(byte channel, byte control, byte value) {
   
-  if(control == moveY)
+  if(channel == 2)
   {
-    RunPattern = false;
-    MoveY(map(value, 0, 127, 1024, 0));
+    if(control == moveY)
+    {
+      RunPattern = false;
+      MoveY(map(value, 0, 127, 1024, 0));
+    }
+    else if(control == moveX)
+    {
+      RunPattern = false;
+      digitalWrite(13, HIGH);
+      MoveX(map(value, 0,127, 0, 1024));
+    } 
   }
-  else if(control == moveX)
-  {
-    RunPattern = false;
-    digitalWrite(13, HIGH);
-    MoveX(map(value, 0,127, 0, 1024));
-  } 
-
 }
 
 // Start at Middle C and move up
